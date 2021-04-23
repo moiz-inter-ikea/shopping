@@ -1,13 +1,14 @@
 package com.orielly.shopping.controllers;
 
 import com.orielly.shopping.entities.Product;
+import com.orielly.shopping.exception.ProductNotFoundException;
 import com.orielly.shopping.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,7 +29,20 @@ public class ProductRestController {
     }
 
     @GetMapping("/{id}")
-    public Optional<Product> findProductById(@PathVariable Integer id){
-        return service.findById(id);
+    public Product findProductById(@PathVariable Integer id){
+        return service.findById(id).orElseThrow(()->new ProductNotFoundException(id));
+    }
+
+    @PostMapping
+    public ResponseEntity<Product> addProduct(@RequestBody Product product){
+        Product p = service.saveProduct(product);
+
+        URI location = ServletUriComponentsBuilder.fromCurrentRequestUri()
+                .path("/{id}")
+                .buildAndExpand(p.getId())
+                .toUri();
+
+        return ResponseEntity.created(location).body(p);
+
     }
 }

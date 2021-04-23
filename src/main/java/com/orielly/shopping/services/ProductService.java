@@ -39,4 +39,8 @@ public class ProductService {
         return repository.findById(id);
     }
 
+    public Product saveProduct(Product product){
+        return repository.save(product);
+    }
+
 }
