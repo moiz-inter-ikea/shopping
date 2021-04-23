@@ -4,6 +4,7 @@ import com.orielly.shopping.entities.Product;
 import com.orielly.shopping.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,13 +22,13 @@ public class ProductRestController {
         this.service = service;
     }
 
-    @GetMapping()
+    @GetMapping
     public List<Product> getAllProducts(){
         return service.findAll();
     }
 
-    @GetMapping("{id}")
-    public Optional<Product> findProductById(Integer id){
+    @GetMapping("/{id}")
+    public Optional<Product> findProductById(@PathVariable Integer id){
         return service.findById(id);
     }
 }
