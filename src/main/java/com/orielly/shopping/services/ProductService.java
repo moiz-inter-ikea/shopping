@@ -43,4 +43,16 @@ public class ProductService {
         return repository.save(product);
     }
 
+    public void deleteProduct(Integer id){
+        repository.deleteById(id);
+    }
+
+    public void deleteAll(){
+        repository.deleteAll(); //deletes will happen one after other of each record
+    }
+
+    public void deleteAllInBatch(){
+        repository.deleteAllInBatch(); // it will delete all in one go, more efficient
+    }
+
 }

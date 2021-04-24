@@ -4,6 +4,7 @@ import com.orielly.shopping.entities.Product;
 import com.orielly.shopping.exception.ProductNotFoundException;
 import com.orielly.shopping.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,13 +25,13 @@ public class ProductRestController {
         this.service = service;
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public List<Product> getAllProducts(){
         return service.findAll();
     }
 
-    @GetMapping("/{id}")
-    public Product findProductById(@PathVariable Integer id){
+    @GetMapping()
+    public Product findProductById(@RequestParam Integer id){
         return service.findById(id).orElseThrow(()->new ProductNotFoundException(id));
     }
 
@@ -48,6 +49,25 @@ public class ProductRestController {
         //Way to just return 201 & Created
         //public ResponseEntity<Product> addProduct(@RequestBody Product product){
         //return new ResponseEntity<> ("CREATED",HttpStatus.CREATED); }
-
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteProduct(@PathVariable Integer id){
+        Optional<Product> existingProduct = service.findById(id);
+        if (existingProduct.isPresent()){
+            service.deleteProduct(id);
+            return ResponseEntity.noContent().build();
+        }
+        else{
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Void> deleteAllProducts(){
+        //service.deleteAll();
+        service.deleteAllInBatch();
+        return ResponseEntity.noContent().build();
+    }
+
 }

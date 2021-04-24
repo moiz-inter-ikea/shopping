@@ -1,0 +1,13 @@
+http :8080/products/all
+
+//
+http :8080/products?id=3
+
+//
+http POST :8080/products name="Ball" price="20"
+
+//
+http DELETE :8080/products/id=4
+
+//
+http DELETE :8080/products/
